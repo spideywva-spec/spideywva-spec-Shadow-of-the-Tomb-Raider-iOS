@@ -1,0 +1,58 @@
+name: iOS Metal prototype build
+
+on:
+  push:
+    branches: [main, "feature/ios-metal-shell"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-ios:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build for iOS device (unsigned compile validation)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project ShadowOfTheTombRaider.xcodeproj \
+            -scheme TombRaiderIOS \
+            -configuration Debug \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build | tee build-ios.log
+
+      - name: Preserve build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-metal-build-log
+          path: build-ios.log
+          if-no-files-found: ignore
+
+      - name: Upload compiled app bundle
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tomb-raider-ios-unsigned-app
+          path: build/DerivedData/Build/Products/Debug-iphoneos/Tomb Raider iOS.app
+          if-no-files-found: error
