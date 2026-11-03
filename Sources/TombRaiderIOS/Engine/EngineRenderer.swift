@@ -59,8 +59,9 @@ final class EngineRenderer: NSObject, MTKViewDelegate {
         lastFrameTime = now
         scene.update(deltaTime: dt)
         if input.isDragging, let node = scene.root.children.first {
-            node.transform.rotation.y += input.dragDelta.x * 0.006
-            node.transform.rotation.x += input.dragDelta.y * 0.006
+            let delta = input.consumeDragDelta()
+            node.transform.rotation.y += delta.x * 0.006
+            node.transform.rotation.x += delta.y * 0.006
         }
         guard let drawable = view.currentDrawable, let pass = view.currentRenderPassDescriptor,
               let command = commandQueue.makeCommandBuffer(), let encoder = command.makeRenderCommandEncoder(descriptor: pass) else { return }
