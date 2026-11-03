@@ -1,0 +1,27 @@
+name: ShadowOfTheTombRaider
+options:
+  bundleIdPrefix: org.spideywva
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    GENERATE_INFOPLIST_FILE: YES
+    INFOPLIST_KEY_CFBundleDisplayName: "Tomb Raider iOS"
+    INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    ENABLE_BITCODE: NO
+targets:
+  TombRaiderIOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources/TombRaiderIOS
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.spideywva.tombraiderios
+        PRODUCT_NAME: "Tomb Raider iOS"
+        INFOPLIST_KEY_UIRequiredDeviceCapabilities: arm64
+        CODE_SIGNING_ALLOWED: NO
