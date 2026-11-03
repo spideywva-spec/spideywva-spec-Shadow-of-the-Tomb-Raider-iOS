@@ -11,5 +11,6 @@ final class EngineInput {
         dragDelta = SIMD2(Float(point.x - lastPoint.x), Float(point.y - lastPoint.y))
         lastPoint = point
     }
+    func consumeDragDelta() -> SIMD2<Float> { let value = dragDelta; dragDelta = .zero; return value }
     func end() { isDragging = false; dragDelta = .zero }
 }
